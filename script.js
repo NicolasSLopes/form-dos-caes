@@ -1,3 +1,10 @@
+const cpfsCadastrados = [
+    "111.111.111-11"
+]
+
+
+
+
 document.getElementById("formulario").addEventListener("submit",function(e){
     let erros = []
 
