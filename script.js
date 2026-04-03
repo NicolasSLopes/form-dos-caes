@@ -1,38 +1,100 @@
 const cpfsCadastrados = [
-    "111.111.111-11"
-]
+    11111111111
+];
+
+document.getElementById("moradia").addEventListener("change", function (){
+    const apt = document.getElementById("apartamentoDiv");
+    const casa = document.getElementById("casaDiv");
+
+    apt.style.display = "none";
+    casa.style.display = "none";
+
+    if (this.value === "apartamento") apt.style.display = "block";
+    if (this.value === "casa") casa.style.display = "block";
+})
+
+document.getElementById("possuiQuintal").addEventListener("change", function (){
+    const div = document.getElementById("quintalSeguroDiv");
+
+    if (this.value === "sim") {
+        div.style.display = "block";
+    } else {
+        div.style.display = "none";
+    }
+})
 
 
+document.getElementById("formulario").addEventListener("submit", function(e) {
 
+    let erros = [];
 
-document.getElementById("formulario").addEventListener("submit",function(e){
-    let erros = []
+    const idade = document.getElementById("idade").value;
+    const tel = document.getElementById("telefone").value;
+    const cpf = document.getElementById("cpf").value;
+    const moradia = document.getElementById("moradia").value;
+    const permite = document.getElementById("permiteAnimais").value;
+    const possuiQuintal = document.getElementById("possuiQuintal").value;
+    const quintalSeguro = document.getElementById("quintalSeguro").value;
+    const pet = document.getElementById("pet").value;
+    const horas = document.getElementById("hora").value;
+    const motivo = document.getElementById("mensagem").value.toLowerCase();
+    const financeiro = document.getElementById("financeiro").value;
+    const decisao = document.getElementById("decisao").value;
 
-    let idade = document.getElementById("idade").value; 
-    if(idade < 18) erros.push("Tem que ter +18")
+    if(idade < 18) erros.push("Tem que ter +18");
 
-    const tel = document.getElementById("telefone").value
-    if(tel.length < 8) erros.push("O telefone deve ter no minimo 8 numeros.")
+    const telNumeros = tel.replace(/\D/g, '');
+    if (telNumeros.length < 8) {
+        erros.push("Telefone inválido (mínimo 8 números)");
+    }
 
-    if(erros.length > 0){
+    if (cpfsCadastrados.includes(cpf)) {
+        erros.push("CPF já cadastrado.")
+    }
+
+    if (moradia === "apartamento"){
+        if (permite !== "sim") {
+            erros.push("Apartamento precisa permitir animais.");
+        }
+    }
+
+    if (moradia === "casa") {
+        if (possuiQuintal == "nao") {
+            erros.push("Casa precisa ter quintal.");
+        }
+
+        if (possuiQuintal === "sim" && quintalSeguro !== "sim") {
+            erros.push("O quintal precisa ser seguro.");
+        }
+    }
+
+    if (horas > 8) {
+        erros.push("O pet ficará mais de 8 horas sozinho! Justifique melhor.");
+    }
+
+    if (pet === "nao") {
+        alert("A ONG poderá acompanhar sua adaptaão com o pet.");
+    }
+
+    const motivosInvalidos = ["quero", "porque sim"];
+    if (motivosInvalidos.some(m => motivo.includes(m))) {
+        erros.push("Motivo muito genérico.");
+    }
+
+    if (financeiro === "ruim") {
+        erros.push("Condição financeira insuficiente.");
+    }
+
+    if (decisao === "hoje") {
+        erros.push("Atenção: A sua decisão pode estar sendo impulsiva!");
+    }
+
+    if (!document.getElementById("termo").checked) {
+        erros.push("Você precisa aceitar os termos");
+    }
+
+    if(erros.length > 0) {
         e.preventDefault(); 
         alert("Erros encontrados:\n" + erros.join("\n"));
     }
 });
-
-const tipoMoradia = document.getElementById("moradia");
-tipoMoradia.addEventListener("change", function() {
-    const apartamentoDiv = document.getElementById("apartamentoDiv");
-    const casaDiv = document.getElementById("casaDiv");
-
-    if(this.value === "apartamento"){
-        apartamentoDiv.style.display = "block";
-        casaDiv.style.display = "none";
-    } else if(this.value === "casa") {
-        casaDiv.style.display = "block";
-        apartamentoDiv.style.display = "none";
-    } else {
-        apartamentoDiv.style.display = "none";
-        casaDiv.style.display = "none";
-    }
-})
